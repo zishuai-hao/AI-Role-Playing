@@ -38,91 +38,45 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Spring Boot 核心依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!-- WebSocket 支持 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-
-        <!-- Spring AI 核心 -->
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-core</artifactId>
-            <version>${spring-ai.version}</version>
-        </dependency>
-
-<!--        &lt;!&ndash; Spring AI DashScope (通义千问) 支持 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.ai</groupId>-->
-<!--            <artifactId>spring-ai-dashscope-spring-boot-starter</artifactId>-->
-<!--            <version></version>-->
-<!--        </dependency>-->
-
-        <!-- 阿里云语音服务SDK -->
-
-
-        <dependency>
-            <groupId>com.alibaba.nls</groupId>
-            <artifactId>nls-sdk-common</artifactId>
-            <version>2.2.19</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.nls</groupId>
-            <artifactId>nls-sdk-transcriber</artifactId>
-            <version>2.2.19</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
         </dependency>
-
-        <!--        &lt;!&ndash; for token &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.aliyun</groupId>-->
-<!--            <artifactId>aliyun-java-sdk-core</artifactId>-->
-<!--            <version>3.7.1</version>-->
-<!--        </dependency>-->
-
-        <!-- JSON 处理 -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
-        <!-- 配置处理 -->
+        <!-- 阿里云token -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-common</artifactId>
+            <version>2.2.19</version>
         </dependency>
 
-        <!-- 日志 -->
+        <!--阿里云语音转文本-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-transcriber</artifactId>
+            <version>2.2.19</version>
         </dependency>
 
-        <!-- 开发工具 -->
+        <!--阿里云文本转语音-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-tts</artifactId>
+            <version>2.2.19</version>
         </dependency>
 
-        <!-- 测试依赖 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
 
