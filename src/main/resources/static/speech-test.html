@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音转录测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .recorder-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .record-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+            margin: 10px;
+        }
+
+        .record-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .record-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(45deg, #ff4757, #c44569);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #2196f3;
+        }
+
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .result-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            min-height: 100px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .upload-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: #0056b3;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .format-support {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .format-support h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 1em;
+        }
+
+        .format-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .format-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .format-tag.supported {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .format-tag.unsupported {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 语音转录测试</h1>
+            <p>点击录音按钮开始录音，或上传音频文件进行转录</p>
+            <div id="formatSupport" class="format-support"></div>
+        </div>
+
+        <div class="recorder-section">
+            <button id="recordBtn" class="record-btn">🎤 开始录音</button>
+            <button id="stopBtn" class="record-btn" disabled>⏹️ 停止录音</button>
+            <button id="playBtn" class="record-btn" disabled>▶️ 播放录音</button>
+        </div>
+
+        <div class="upload-section">
+            <label for="fileInput" class="file-label">📁 选择音频文件</label>
+            <input type="file" id="fileInput" class="file-input" accept="audio/webm,audio/ogg,audio/wav,audio/mp4,audio/mpeg,audio/aac,audio/amr">
+            <div class="file-info">支持格式: WebM(OPUS), OGG(OPUS), WAV, MP4, MP3, AAC, AMR</div>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div id="resultSection" class="result-section hidden">
+            <h3>📝 转录结果</h3>
+            <div id="resultText" class="result-text"></div>
+        </div>
+    </div>
+
+    <script src="recorder.js"></script>
+    <script>
+        let recorder = null;
+        let audioBlob = null;
+        let audioUrl = null;
+        let currentAudioType = 'audio/wav';
+
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const playBtn = document.getElementById('playBtn');
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('status');
+        const resultSection = document.getElementById('resultSection');
+        const resultText = document.getElementById('resultText');
+        const formatSupport = document.getElementById('formatSupport');
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        function showResult(text) {
+            resultText.textContent = text;
+            resultSection.classList.remove('hidden');
+        }
+        function showLoading(show) {
+            if (show) {
+                status.innerHTML = '<span class="loading"></span>正在处理...';
+                status.className = 'status info';
+                status.style.display = 'block';
+            }
+        }
+        function displayFormatSupport() {
+            const isWavSupported = window.MediaRecorder && MediaRecorder.isTypeSupported('audio/wav');
+            formatSupport.innerHTML = `
+                <h4>🎵 音频格式: 8kHz, 16bit, WAV</h4>
+                <div class="format-list">
+                    <span class="format-tag ${isWavSupported ? 'supported' : 'unsupported'}">WAV容器</span>
+                    <span class="format-tag ${isWavSupported ? 'supported' : 'unsupported'}">PCM编码</span>
+                    <span class="format-tag ${isWavSupported ? 'supported' : 'unsupported'}">8kHz采样率</span>
+                    <span class="format-tag ${isWavSupported ? 'supported' : 'unsupported'}">16bit位深</span>
+                </div>
+                <p style="margin-top: 8px; font-size: 0.8em;">
+                    ${isWavSupported ?
+                        '✅ 当前浏览器支持8kHz WAV格式，兼容阿里云ASR' :
+                        '❌ 当前浏览器不支持WAV格式，请使用Chrome、Firefox或Edge浏览器'}
+                </p>
+            `;
+        }
+        displayFormatSupport();
+
+        recordBtn.addEventListener('click', () => {
+            recorder = new Recorder({
+                sampleRate: 8000,
+                onStatus: (s) => {
+                    if (s === 'recording') {
+                        showStatus('正在录音...', 'info');
+                        recordBtn.disabled = true;
+                        recordBtn.classList.add('recording');
+                        stopBtn.disabled = false;
+                    } else if (s === 'stopped') {
+                        recordBtn.disabled = false;
+                        recordBtn.classList.remove('recording');
+                        stopBtn.disabled = true;
+                    } else if (s === 'playing') {
+                        showStatus('正在播放录音...', 'info');
+                    }
+                },
+                onError: (err) => {
+                    showStatus('录音失败: ' + err.message, 'error');
+                },
+                onReady: (blob, url) => {
+                    audioBlob = blob;
+                    audioUrl = url;
+                    playBtn.disabled = false;
+                    showStatus('录音完成！已转换为 8kHz/16bit 单声道 WAV', 'success');
+                },
+                onStop: () => {}
+            });
+            recorder.start();
+        });
+        stopBtn.addEventListener('click', () => {
+            if (recorder) recorder.stop();
+        });
+        playBtn.addEventListener('click', () => {
+            if (recorder) recorder.play();
+        });
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const supportedTypes = ['audio/webm', 'audio/ogg', 'audio/wav', 'audio/mp4', 'audio/mpeg', 'audio/aac', 'audio/amr'];
+                if (!supportedTypes.includes(file.type) && !file.name.match(/\.(webm|ogg|wav|mp4|mp3|aac|amr)$/i)) {
+                    showStatus('不支持的音频格式，请选择 WebM(OPUS)、OGG(OPUS)、WAV、MP4、MP3、AAC 或 AMR 文件', 'error');
+                    return;
+                }
+                audioBlob = file;
+                audioUrl = URL.createObjectURL(file);
+                currentAudioType = file.type || 'audio/wav';
+                showStatus(`已选择文件: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`, 'info');
+                playBtn.disabled = false;
+            }
+        });
+        function getFileName() {
+            if (!audioBlob) return 'recording.wav';
+            if (audioBlob.type.includes('wav')) return 'recording.wav';
+            if (audioBlob.type.includes('webm')) return 'recording.webm';
+            if (audioBlob.type.includes('ogg')) return 'recording.ogg';
+            if (audioBlob.type.includes('mp4')) return 'recording.mp4';
+            if (audioBlob.type.includes('mp3') || audioBlob.type.includes('mpeg')) return 'recording.mp3';
+            if (audioBlob.type.includes('aac')) return 'recording.aac';
+            if (audioBlob.type.includes('amr')) return 'recording.amr';
+            return 'recording.wav';
+        }
+        async function uploadAndTranscribe() {
+            if (!audioBlob) {
+                showStatus('请先录音或选择音频文件', 'error');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', audioBlob, getFileName());
+            showStatus('正在上传并转录...', 'info');
+            showLoading(true);
+            try {
+                const response = await fetch('/api/speech/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                showLoading(false);
+                if (result.success) {
+                    showStatus('转录成功！', 'success');
+                    showResult(result.text);
+                } else {
+                    showStatus('转录失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                showStatus('上传失败: ' + error.message, 'error');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.recorder-section');
+            const transcribeBtn = document.createElement('button');
+            transcribeBtn.textContent = '🚀 开始转录';
+            transcribeBtn.className = 'record-btn';
+            transcribeBtn.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+            transcribeBtn.style.boxShadow = '0 10px 20px rgba(40, 167, 69, 0.3)';
+            transcribeBtn.addEventListener('click', uploadAndTranscribe);
+            container.appendChild(transcribeBtn);
+        });
+    </script>
+</body>
+</html>

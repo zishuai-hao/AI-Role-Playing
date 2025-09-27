@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI角色扮演系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #17a2b8, #6f42c1);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(23, 162, 184, 0.4);
+        }
+
+        .api-info {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .api-info h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .api-endpoint {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .method.get {
+            background: #28a745;
+            color: white;
+        }
+
+        .method.post {
+            background: #007bff;
+            color: white;
+        }
+
+        .voice-chat-demo {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 2px solid #007bff;
+        }
+
+        .voice-chat-demo h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .demo-input {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+            min-width: 200px;
+        }
+
+        .demo-input:focus {
+            border-color: #007bff;
+        }
+
+        .demo-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-btn-primary {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .demo-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .demo-btn-secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .demo-btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .demo-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+
+        .demo-result.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .demo-result.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI角色扮演系统</h1>
+            <p>基于Spring Boot和阿里云语音服务的智能对话系统<br>
+            支持多种角色扮演、语音转录和实时对话功能</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3>角色扮演</h3>
+                <p>支持多种预设角色，包括萌妹子、专业顾问等，每个角色都有独特的性格和说话风格</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <h3>语音转录</h3>
+                <p>集成阿里云ASR服务，支持实时语音转文字，让对话更加自然流畅</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>智能对话</h3>
+                <p>基于通义千问大模型，提供智能、有趣的对话体验，支持流式输出</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔊</div>
+                <h3>语音合成</h3>
+                <p>集成阿里云TTS服务，支持将AI回复转换为自然语音，实现真正的语音对话</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>完整语音聊天</h3>
+                <p>完整的语音交互体验：录音→转录→AI回复→语音合成→播放，一站式语音对话解决方案</p>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/voice-chat.html" class="btn btn-primary">🎯 完整语音聊天</a>
+            <a href="/speech-test.html" class="btn btn-secondary">🎤 语音转录测试</a>
+            <a href="/api/chat/simple/chat?query=你好" class="btn btn-info" target="_blank">💬 简单对话</a>
+            <a href="/api/chat/roleplay/simple/chat?character=anime-girl&query=你好" class="btn btn-info" target="_blank">🎭 角色扮演</a>
+        </div>
+
+        <div class="api-info">
+            <h3>📡 API接口说明</h3>
+            
+            <div class="api-endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/chat/simple/chat</strong> - 简单AI对话
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/chat/roleplay/simple/chat</strong> - 角色扮演对话
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/chat/stream/chat</strong> - 流式对话
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/speech/transcribe</strong> - 语音转录
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/voice-chat/process</strong> - 完整语音聊天（录音→转录→AI回复→语音合成）
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/voice-chat/tts</strong> - 文本转语音合成
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/voice-chat/transcribe</strong> - 语音转录
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/voice-chat/chat</strong> - 文本对话
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/speech/health</strong> - 语音服务健康检查
+            </div>
+        </div>
+
+        <div class="voice-chat-demo">
+            <h3>🎯 语音聊天演示</h3>
+            <p style="text-align: center; margin-bottom: 20px; color: #666;">
+                体验完整的语音交互：输入文字，AI回复并转换为语音播放
+            </p>
+            
+            <div class="demo-controls">
+                <input type="text" id="demoInput" class="demo-input" placeholder="输入消息..." maxlength="200">
+                <select id="demoCharacter" class="demo-input" style="min-width: 120px;">
+                    <option value="default">智能助手</option>
+                    <option value="anime-girl">动漫少女</option>
+                    <option value="professional">专业顾问</option>
+                    <option value="gentle-lady">温柔女士</option>
+                    <option value="energetic-boy">活力男孩</option>
+                </select>
+                <button id="demoSendBtn" class="demo-btn demo-btn-primary">💬 发送消息</button>
+                <button id="demoTTSBtn" class="demo-btn demo-btn-secondary">🔊 语音合成</button>
+            </div>
+            
+            <div id="demoResult" class="demo-result">
+                <div id="demoContent"></div>
+                <div id="demoAudio" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class VoiceChatDemo {
+            constructor() {
+                this.demoInput = document.getElementById('demoInput');
+                this.demoCharacter = document.getElementById('demoCharacter');
+                this.demoSendBtn = document.getElementById('demoSendBtn');
+                this.demoTTSBtn = document.getElementById('demoTTSBtn');
+                this.demoResult = document.getElementById('demoResult');
+                this.demoContent = document.getElementById('demoContent');
+                this.demoAudio = document.getElementById('demoAudio');
+                
+                this.initEventListeners();
+            }
+            
+            initEventListeners() {
+                this.demoSendBtn.addEventListener('click', () => this.sendMessage());
+                this.demoTTSBtn.addEventListener('click', () => this.synthesizeText());
+                this.demoInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+            }
+            
+            async sendMessage() {
+                const message = this.demoInput.value.trim();
+                if (!message) {
+                    this.showError('请输入消息内容');
+                    return;
+                }
+                
+                this.setLoading(true);
+                try {
+                    const response = await fetch('/api/voice-chat/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `message=${encodeURIComponent(message)}&character=${encodeURIComponent(this.demoCharacter.value)}`
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('请求失败: ' + response.status);
+                    }
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        this.showSuccess(`<strong>AI回复：</strong>${result.aiResponse}`);
+                        this.demoInput.value = '';
+                    } else {
+                        this.showError('AI回复失败: ' + (result.error || '未知错误'));
+                    }
+                } catch (error) {
+                    this.showError('发送消息失败: ' + error.message);
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+            
+            async synthesizeText() {
+                const message = this.demoInput.value.trim();
+                if (!message) {
+                    this.showError('请输入要合成的文本');
+                    return;
+                }
+                
+                this.setLoading(true);
+                try {
+                    const response = await fetch('/api/voice-chat/tts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `text=${encodeURIComponent(message)}`
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('语音合成失败: ' + response.status);
+                    }
+                    
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    this.showSuccess(`<strong>语音合成成功！</strong>正在播放: "${message}"`);
+                    this.playAudio(audioUrl);
+                } catch (error) {
+                    this.showError('语音合成失败: ' + error.message);
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+            
+            playAudio(audioUrl) {
+                const audio = new Audio(audioUrl);
+                audio.controls = true;
+                audio.style.width = '100%';
+                audio.style.marginTop = '10px';
+                
+                // 清除之前的音频元素
+                this.demoAudio.innerHTML = '';
+                this.demoAudio.appendChild(audio);
+                
+                audio.play().catch(e => {
+                    console.error('音频播放失败:', e);
+                    this.showError('音频播放失败，请检查浏览器权限');
+                });
+            }
+            
+            setLoading(loading) {
+                this.demoSendBtn.disabled = loading;
+                this.demoTTSBtn.disabled = loading;
+                this.demoInput.disabled = loading;
+                this.demoCharacter.disabled = loading;
+                
+                if (loading) {
+                    this.demoSendBtn.innerHTML = '⏳ 处理中...';
+                    this.demoTTSBtn.innerHTML = '⏳ 合成中...';
+                } else {
+                    this.demoSendBtn.innerHTML = '💬 发送消息';
+                    this.demoTTSBtn.innerHTML = '🔊 语音合成';
+                }
+            }
+            
+            showSuccess(content) {
+                this.demoContent.innerHTML = content;
+                this.demoResult.className = 'demo-result success';
+                this.demoResult.style.display = 'block';
+            }
+            
+            showError(message) {
+                this.demoContent.innerHTML = message;
+                this.demoResult.className = 'demo-result error';
+                this.demoResult.style.display = 'block';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new VoiceChatDemo();
+        });
+    </script>
+</body>
+</html>
