@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /api
+    context-path: /
 
 spring:
   application:
@@ -10,7 +10,7 @@ spring:
   # Spring AI DashScope (通义千问) 配置
   ai:
     dashscope:
-      api-key: ${DASHSCOPE_API_KEY:your-dashscope-api-key-here}
+      api-key: ${DASHSCOPE_API_KEY}
       chat:
         options:
           model: qwen-turbo  # 可选: qwen-turbo, qwen-plus, qwen-max
@@ -21,12 +21,12 @@ spring:
 # 阿里云语音服务配置
 alibaba:
   cloud:
-    access-key-id: ${ALIBABA_ACCESS_KEY_ID:your-access-key-id}
-    access-key-secret: ${ALIBABA_ACCESS_KEY_SECRET:your-access-key-secret}
+    access-key-id: ${ALIBABA_ACCESS_KEY_ID}
+    access-key-secret: ${ALIBABA_ACCESS_KEY_SECRET}
     
     # ASR (语音识别) 配置
     asr:
-      app-key: ${ALIBABA_ASR_APP_KEY:your-asr-app-key}
+      app-key: ${ALIBABA_ASR_APP_KEY}
       url: wss://nls-gateway.cn-shanghai.aliyuncs.com/ws/v1
       format: pcm
       sample-rate: 16000
@@ -36,7 +36,7 @@ alibaba:
       
     # TTS (语音合成) 配置  
     tts:
-      app-key: ${ALIBABA_TTS_APP_KEY:your-tts-app-key}
+      app-key: ${ALIBABA_TTS_APP_KEY}
       url: wss://nls-gateway.cn-shanghai.aliyuncs.com/ws/v1
       format: wav
       sample-rate: 16000
