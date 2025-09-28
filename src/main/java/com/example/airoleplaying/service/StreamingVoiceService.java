@@ -631,6 +631,10 @@ public class StreamingVoiceService {
                 synthesizer.setSpeechRate(100);
                 synthesizer.setText(text);
                 synthesizer.addCustomedParam("enable_subtitle", false);
+                
+                // 将合成器存储到会话上下文中，以便后续停止
+                context.synthesizer = synthesizer;
+                
                 synthesizer.start();
                 synthesizer.waitForComplete();
             } catch (Exception e) {
@@ -640,6 +644,8 @@ public class StreamingVoiceService {
                 if (synthesizer != null) {
                     try { synthesizer.close(); } catch (Exception e) { log.warn("关闭合成器失败: {}", e.getMessage()); }
                 }
+                // 清除会话上下文中的合成器引用
+                context.synthesizer = null;
                 // ASR已在句子结束时关闭，无需再次关闭
                 log.debug("[triggerAudioSynthesis] 语音合成完成，ASR已提前关闭");
             }
@@ -691,6 +697,32 @@ public class StreamingVoiceService {
     }
 
     /**
+     * 停止TTS合成
+     */
+    public void stopTts(String sessionId) {
+        SessionContext context = activeSessions.get(sessionId);
+        if (context == null) {
+            log.warn("会话不存在: {}", sessionId);
+            return;
+        }
+        
+        if (context.synthesizer != null) {
+            try {
+                context.synthesizer.close();
+                context.synthesizer = null;
+                log.info("TTS合成已停止: {}", sessionId);
+                sendMessage(sessionId, WebSocketMessageEntity.createStatus(sessionId, "TTS合成已停止"));
+            } catch (Exception e) {
+                log.error("停止TTS合成失败: {}", e.getMessage(), e);
+                sendMessage(sessionId, WebSocketMessageEntity.createError(sessionId, "停止TTS合成失败: " + e.getMessage()));
+            }
+        } else {
+            log.debug("当前没有进行TTS合成: {}", sessionId);
+            sendMessage(sessionId, WebSocketMessageEntity.createStatus(sessionId, "当前没有进行TTS合成"));
+        }
+    }
+
+    /**
      * 发送WebSocket消息
      */
     private void sendMessage(String sessionId, WebSocketMessageEntity message) {
@@ -714,6 +746,7 @@ public class StreamingVoiceService {
         String characterId;
         CharacterProfile character;
         SpeechTranscriber transcriber;
+        SpeechSynthesizer synthesizer; // TTS合成器
         long lastActivityTime; // 最后活动时间，用于超时检测
         boolean aiTriggered = false; // 标记本轮是否已触发AI，防止多次触发
     }

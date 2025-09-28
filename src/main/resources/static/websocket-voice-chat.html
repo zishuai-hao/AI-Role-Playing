@@ -456,6 +456,8 @@
                 this.consecutiveSilenceCount = 0;
                 this.userHasSpoken = false; // 标记用户是否已经开始说话
                 this.speechStartTime = 0; // 用户开始说话的时间
+                this.currentAudioPlayer = null; // 当前播放的音频元素
+                this.isAudioPlaying = false; // 音频播放状态
                 // DOM元素
                 this.chatMessages = document.getElementById('chatMessages');
                 this.connectionStatus = document.getElementById('connectionStatus');
@@ -634,9 +636,32 @@
                 }
             }
 
+            // 停止当前音频播放
+            stopCurrentAudio() {
+                if (this.currentAudioPlayer && this.isAudioPlaying) {
+                    this.currentAudioPlayer.pause();
+                    this.currentAudioPlayer.currentTime = 0;
+                    this.isAudioPlaying = false;
+                    this.currentAudioPlayer = null;
+                    this.updateStatus('音频播放已停止');
+                    console.log('音频播放已停止');
+                }
+            }
+
             // 切换录音状态
             toggleRecording() {
                 if (!this.isConnected) return;
+                
+                // 如果正在播放音频，先停止播放
+                if (this.isAudioPlaying) {
+                    this.stopCurrentAudio();
+                    // 发送停止TTS的消息到后端
+                    this.sendMessage({
+                        type: 'stop_tts',
+                        sessionId: this.sessionId
+                    });
+                }
+                
                 if (this.isRecording) {
                     this.stopRecording();
                 } else {
@@ -647,7 +672,7 @@
                         type: 'start_transcriber',
                         sessionId: this.sessionId
                     });
-                    // 等待收到“ASR已启动”后再开始录音
+                    // 等待收到"ASR已启动"后再开始录音
                 }
             }
 
@@ -788,13 +813,23 @@
                     
                     audio.src = audioUrl;
                     
+                    // 设置当前播放的音频元素
+                    this.currentAudioPlayer = audio;
+                    this.isAudioPlaying = true;
+                    
                     // 等待播放完成
                     await new Promise((resolve, reject) => {
                         audio.onended = () => {
                             URL.revokeObjectURL(audioUrl);
+                            this.isAudioPlaying = false;
+                            this.currentAudioPlayer = null;
                             resolve();
                         };
-                        audio.onerror = reject;
+                        audio.onerror = (error) => {
+                            this.isAudioPlaying = false;
+                            this.currentAudioPlayer = null;
+                            reject(error);
+                        };
                         audio.play().catch(reject);
                     });
                     
@@ -827,6 +862,9 @@
                     this.showError('音频播放失败: ' + error.message);
                     this.updateStatus('播放失败，请继续说话');
                     this.isWaitingForUser = true;
+                    // 重置音频播放状态
+                    this.isAudioPlaying = false;
+                    this.currentAudioPlayer = null;
                 }
             }
 

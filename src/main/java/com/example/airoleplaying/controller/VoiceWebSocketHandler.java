@@ -84,6 +84,9 @@ public class VoiceWebSocketHandler implements WebSocketHandler {
                 case "change_character":
                     handleChangeCharacter(session, wsMessage);
                     break;
+                case "stop_tts":
+                    handleStopTts(session, wsMessage);
+                    break;
                 default:
                     log.warn("未知的消息类型: {}", wsMessage.getType());
             }
@@ -341,6 +344,28 @@ public class VoiceWebSocketHandler implements WebSocketHandler {
         } catch (Exception e) {
             log.error("角色切换失败: {}", e.getMessage(), e);
             sendError(session, "角色切换失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 处理停止TTS请求
+     */
+    private void handleStopTts(WebSocketSession session, WebSocketMessageEntity message) throws IOException {
+        try {
+            String sessionId = (String) session.getAttributes().get("sessionId");
+            if (sessionId == null) {
+                sendError(session, "会话未开始，请先发送start_session消息");
+                return;
+            }
+            
+            // 停止TTS合成
+            streamingVoiceService.stopTts(sessionId);
+            
+            log.info("TTS停止成功: sessionId={}", sessionId);
+            
+        } catch (Exception e) {
+            log.error("停止TTS失败: {}", e.getMessage(), e);
+            sendError(session, "停止TTS失败: " + e.getMessage());
         }
     }
 
