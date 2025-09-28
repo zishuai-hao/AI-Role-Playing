@@ -29,7 +29,7 @@ alibaba:
       app-key: ${ALIBABA_ASR_APP_KEY}
       url: wss://nls-gateway.cn-shanghai.aliyuncs.com/ws/v1
       format: pcm
-      sample-rate: 16000
+      sample-rate: 8000
       enable-intermediate-result: true
       enable-punctuation-prediction: true
       enable-inverse-text-normalization: true
@@ -44,7 +44,7 @@ alibaba:
 
 # WebSocket 配置
 websocket:
-  path: /ws/voice-chat
+  path: /ws/voice-stream
   allowed-origins: "*"  # 生产环境请设置具体域名
   max-session-idle-timeout: 300000  # 5分钟
   max-text-message-buffer-size: 8192

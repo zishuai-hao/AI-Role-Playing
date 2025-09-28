@@ -177,6 +177,11 @@
             color: white;
         }
 
+        .method.websocket {
+            background: #ff6b35;
+            color: white;
+        }
+
         .voice-chat-demo {
             margin-top: 40px;
             padding: 30px;
@@ -294,7 +299,7 @@
             <div class="feature-card">
                 <div class="feature-icon">💬</div>
                 <h3>智能对话</h3>
-                <p>基于通义千问大模型，提供智能、有趣的对话体验，支持流式输出</p>
+                <p>基于通义千问大模型，提供智能、有趣的对话体验</p>
             </div>
 
             <div class="feature-card">
@@ -305,16 +310,46 @@
 
             <div class="feature-card">
                 <div class="feature-icon">🎯</div>
-                <h3>完整语音聊天</h3>
-                <p>完整的语音交互体验：录音→转录→AI回复→语音合成→播放，一站式语音对话解决方案</p>
+                <h3>WebSocket语音聊天</h3>
+                <p>基于WebSocket的实时语音交互：支持角色切换、自动录音、语音对话，提供最流畅的语音聊天体验</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>传统语音聊天</h3>
+                <p>基于HTTP的传统语音交互：录音→转录→AI回复→语音合成，适合简单的语音对话需求</p>
             </div>
         </div>
 
         <div class="action-buttons">
-            <a href="/voice-chat.html" class="btn btn-primary">🎯 完整语音聊天</a>
-            <a href="/speech-test.html" class="btn btn-secondary">🎤 语音转录测试</a>
-            <a href="/api/chat/simple/chat?query=你好" class="btn btn-info" target="_blank">💬 简单对话</a>
-            <a href="/api/chat/roleplay/simple/chat?character=anime-girl&query=你好" class="btn btn-info" target="_blank">🎭 角色扮演</a>
+            <a href="websocket-voice-chat.html" class="btn btn-primary">🎯 WebSocket语音聊天</a>
+            <a href="voice-chat.html" class="btn btn-secondary">💬 传统语音聊天</a>
+            <a href="speech-test.html" class="btn btn-info">🎤 语音转录测试</a>
+            <a href="/api/chat/simple/chat?query=你好" class="btn btn-info" target="_blank">🤖 简单对话API</a>
+        </div>
+
+        <div class="quick-nav" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #333;">🚀 快速导航</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🎯</div>
+                    <h4 style="margin-bottom: 8px;">WebSocket语音聊天</h4>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">实时语音交互，支持角色切换</p>
+                    <a href="websocket-voice-chat.html" style="color: #007bff; text-decoration: none; font-weight: bold;">立即体验 →</a>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">💬</div>
+                    <h4 style="margin-bottom: 8px;">传统语音聊天</h4>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">基于HTTP的语音交互</p>
+                    <a href="voice-chat.html" style="color: #28a745; text-decoration: none; font-weight: bold;">立即体验 →</a>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🎤</div>
+                    <h4 style="margin-bottom: 8px;">语音转录测试</h4>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">测试语音转文字功能</p>
+                    <a href="speech-test.html" style="color: #17a2b8; text-decoration: none; font-weight: bold;">立即体验 →</a>
+                </div>
+            </div>
         </div>
 
         <div class="api-info">
@@ -332,7 +367,7 @@
 
             <div class="api-endpoint">
                 <span class="method get">GET</span>
-                <strong>/api/chat/stream/chat</strong> - 流式对话
+                <strong>/api/chat/stream/chat</strong> - 语音对话
             </div>
 
             <div class="api-endpoint">
@@ -364,12 +399,23 @@
                 <span class="method get">GET</span>
                 <strong>/api/speech/health</strong> - 语音服务健康检查
             </div>
+
+            <div class="api-endpoint">
+                <span class="method websocket">WS</span>
+                <strong>/ws/voice-chat</strong> - WebSocket语音聊天连接
+            </div>
+
+            <div class="api-endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/characters</strong> - 获取可用角色列表
+            </div>
         </div>
 
         <div class="voice-chat-demo">
-            <h3>🎯 语音聊天演示</h3>
+            <h3>🎯 传统语音聊天演示</h3>
             <p style="text-align: center; margin-bottom: 20px; color: #666;">
-                体验完整的语音交互：输入文字，AI回复并转换为语音播放
+                体验传统语音交互：输入文字，AI回复并转换为语音播放<br>
+                <small style="color: #999;">💡 推荐使用 <strong>WebSocket语音聊天</strong> 获得更好的实时体验</small>
             </p>
             
             <div class="demo-controls">

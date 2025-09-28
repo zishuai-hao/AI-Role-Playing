@@ -13,6 +13,7 @@ import com.alibaba.nls.client.protocol.tts.SpeechSynthesizerListener;
 import com.alibaba.nls.client.protocol.tts.SpeechSynthesizerResponse;
 import com.example.airoleplaying.config.AlibabaCloudProperties;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Getter
 public class SpeechAiService {
     private final AlibabaCloudProperties alibabaCloudProperties;
     private NlsClient client;
