@@ -723,6 +723,79 @@ public class StreamingVoiceService {
     }
 
     /**
+     * 使用角色技能
+     */
+    public void useSkill(String sessionId, String skill) {
+        SessionContext context = activeSessions.get(sessionId);
+        if (context == null) {
+            log.warn("会话不存在: {}", sessionId);
+            return;
+        }
+        
+        try {
+            // 获取当前角色信息
+            CharacterProfile character = characterService.getCharacterProfile(context.characterId);
+            
+            // 检查角色是否具有该技能
+            if (!character.hasSkill(skill)) {
+                String errorMsg = String.format("角色 %s 不具备技能: %s", character.getName(), skill);
+                log.warn(errorMsg);
+                sendMessage(sessionId, WebSocketMessageEntity.createError(sessionId, errorMsg));
+                return;
+            }
+            
+            // 发送技能使用状态
+            sendMessage(sessionId, WebSocketMessageEntity.createStatus(sessionId, 
+                String.format("正在使用技能: %s", skill)));
+            
+            // 模拟技能使用（这里可以根据具体需求实现不同的技能逻辑）
+            String skillResponse = generateSkillResponse(character, skill);
+            
+            // 发送技能响应
+            sendMessage(sessionId, WebSocketMessageEntity.createSkillResponse(sessionId, skill, skillResponse));
+            
+            log.info("技能使用成功: sessionId={}, character={}, skill={}", 
+                sessionId, character.getName(), skill);
+            
+        } catch (Exception e) {
+            log.error("技能使用失败: {}", e.getMessage(), e);
+            sendMessage(sessionId, WebSocketMessageEntity.createError(sessionId, 
+                "技能使用失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 生成技能响应
+     */
+    private String generateSkillResponse(CharacterProfile character, String skill) {
+        // 根据技能类型生成不同的响应
+        switch (skill) {
+            case "知识问答":
+                return String.format("作为%s，我很乐意回答您的知识性问题。请告诉我您想了解什么？", character.getName());
+            case "情感支持":
+                return String.format("作为%s，我会用心倾听您的心声，给您温暖的支持和安慰。", character.getName());
+            case "语言学习":
+                return String.format("作为%s，我可以帮助您学习语言，提供语法指导和表达建议。", character.getName());
+            case "专业咨询":
+                return String.format("作为%s，我可以为您提供专业领域的建议和指导。", character.getName());
+            case "创意写作":
+                return String.format("作为%s，我可以帮助您进行创意写作，提供灵感和创作指导。", character.getName());
+            case "历史讲解":
+                return String.format("作为%s，我可以生动地为您讲解历史事件和人物。", character.getName());
+            case "哲学思辨":
+                return String.format("作为%s，我可以引导您进行哲学思考，探讨人生和世界的深层问题。", character.getName());
+            case "文学赏析":
+                return String.format("作为%s，我可以深入分析文学作品，提升您的文学素养。", character.getName());
+            case "科学探索":
+                return String.format("作为%s，我可以用通俗易懂的方式解释科学原理，激发您对科学的兴趣。", character.getName());
+            case "艺术指导":
+                return String.format("作为%s，我可以提供艺术创作指导，培养您的艺术修养。", character.getName());
+            default:
+                return String.format("作为%s，我准备使用%s技能为您服务。", character.getName(), skill);
+        }
+    }
+
+    /**
      * 发送WebSocket消息
      */
     private void sendMessage(String sessionId, WebSocketMessageEntity message) {

@@ -79,6 +79,11 @@ public class WebSocketMessageEntity {
      * 总分块数
      */
     private Integer totalChunks;
+    
+    /**
+     * 技能名称（用于技能调用）
+     */
+    private String skill;
 
     /**
      * 创建语音数据消息
@@ -152,6 +157,31 @@ public class WebSocketMessageEntity {
         message.setType("status");
         message.setSessionId(sessionId);
         message.setStatus(status);
+        message.setTimestamp(System.currentTimeMillis());
+        return message;
+    }
+
+    /**
+     * 创建技能使用消息
+     */
+    public static WebSocketMessageEntity createSkillUsage(String sessionId, String skill) {
+        WebSocketMessageEntity message = new WebSocketMessageEntity();
+        message.setType("use_skill");
+        message.setSessionId(sessionId);
+        message.setSkill(skill);
+        message.setTimestamp(System.currentTimeMillis());
+        return message;
+    }
+
+    /**
+     * 创建技能响应消息
+     */
+    public static WebSocketMessageEntity createSkillResponse(String sessionId, String skill, String response) {
+        WebSocketMessageEntity message = new WebSocketMessageEntity();
+        message.setType("skill_response");
+        message.setSessionId(sessionId);
+        message.setSkill(skill);
+        message.setData(response);
         message.setTimestamp(System.currentTimeMillis());
         return message;
     }
