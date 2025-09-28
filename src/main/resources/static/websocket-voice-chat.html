@@ -26,8 +26,8 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 900px;
-            height: 700px;
+            max-width: 1000px;
+            height: 750px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -85,23 +85,170 @@
         }
 
         .character-selector select {
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 15px;
             border: none;
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 0.9em;
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .character-selector select:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .character-selector select option {
             color: #333;
+            padding: 8px;
+            background: white;
+        }
+
+        .character-selector select option:hover {
+            background: #f0f0f0;
+        }
+
+        /* 角色选择器增强样式 */
+        .character-selector-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .character-preview {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            margin-top: 8px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            max-width: 300px;
+        }
+
+        .character-selector-container:hover .character-preview {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .character-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .character-preview-avatar {
+            font-size: 1.5em;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            color: white;
+        }
+
+        .character-preview-name {
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .character-preview-category {
+            font-size: 0.8em;
+            color: #666;
+            margin: 0;
+        }
+
+        .character-preview-skills {
+            margin-top: 8px;
+        }
+
+        .character-preview-skills-title {
+            font-size: 0.8em;
+            color: #666;
+            margin: 0 0 4px 0;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+
+        /* 角色搜索样式 */
+        .character-search-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .character-search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 15px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .character-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .character-search-input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .search-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .search-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
         .message {
@@ -211,11 +358,69 @@
 
         .chat-controls {
             padding: 20px;
-            background: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-top: 1px solid #e9ecef;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 技能控制区域 */
+        .skills-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .skills-title {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .skill-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .skill-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .skill-button:active {
+            transform: translateY(0);
+        }
+
+        .skill-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .skill-icon {
+            font-size: 0.9em;
         }
 
         .voice-controls {
@@ -383,6 +588,240 @@
         .chat-messages::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
+
+        /* 角色信息样式 */
+        .character-info-message {
+            background: linear-gradient(45deg, #e3f2fd, #f3e5f5);
+            border: 1px solid #bbdefb;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.3s ease-out;
+            transition: opacity 0.5s ease;
+        }
+
+        .character-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .character-avatar {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .character-details {
+            flex: 1;
+        }
+
+        .character-details h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .character-category {
+            margin: 0 0 8px 0;
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .character-background {
+            margin: 0 0 8px 0;
+            color: #555;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .character-skills {
+            margin: 8px 0 0 0;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .character-skills strong {
+            color: #333;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 技能使用消息样式 */
+        .skill-usage-message {
+            background: linear-gradient(45deg, #e8f5e8, #f0f8f0);
+            border: 1px solid #c3e6c3;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+            animation: slideIn 0.3s ease-out;
+            transition: opacity 0.5s ease;
+        }
+
+        .skill-usage-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-usage-content .skill-icon {
+            font-size: 1.2em;
+        }
+
+        .skill-text {
+            flex: 1;
+            color: #2d5a2d;
+            font-weight: 500;
+        }
+
+        .skill-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        /* 角色切换动画样式 */
+        .character-switch-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .switch-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .switch-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: rotate 2s linear infinite;
+        }
+
+        .switch-text {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .switch-character-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .chat-container {
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .chat-header {
+                padding: 15px;
+            }
+            
+            .character-selector-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .character-search-container {
+                width: 100%;
+            }
+            
+            .character-selector select {
+                min-width: 100%;
+            }
+            
+            .skills-container {
+                justify-content: flex-start;
+            }
+            
+            .skill-button {
+                font-size: 0.75em;
+                padding: 6px 12px;
+            }
+            
+            .voice-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-header h1 {
+                font-size: 1.5em;
+            }
+            
+            .character-preview {
+                max-width: 250px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .skill-button {
+                font-size: 0.7em;
+                padding: 5px 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -395,13 +834,35 @@
             </div>
             <div class="character-selector">
                 <label for="characterSelect">角色：</label>
-                <select id="characterSelect">
-                    <option value="default">智能助手</option>
-                    <option value="anime-girl">动漫少女</option>
-                    <option value="professional">专业顾问</option>
-                    <option value="gentle-lady">温柔女士</option>
-                    <option value="energetic-boy">活力男孩</option>
-                </select>
+                <div class="character-selector-container">
+                    <div class="character-search-container">
+                        <input type="text" id="characterSearch" placeholder="搜索角色..." class="character-search-input">
+                        <button id="searchBtn" class="search-btn">🔍</button>
+                    </div>
+                    <select id="characterSelect">
+                        <option value="default">智能助手</option>
+                        <option value="anime-girl">动漫少女</option>
+                        <option value="professional">专业顾问</option>
+                        <option value="gentle-lady">温柔女士</option>
+                        <option value="energetic-boy">活力男孩</option>
+                    </select>
+                    <div class="character-preview" id="characterPreview">
+                        <div class="character-preview-header">
+                            <div class="character-preview-avatar" id="previewAvatar">🤖</div>
+                            <div>
+                                <h4 class="character-preview-name" id="previewName">智能助手</h4>
+                                <p class="character-preview-category" id="previewCategory">AI助手</p>
+                            </div>
+                        </div>
+                        <div class="character-preview-skills">
+                            <p class="character-preview-skills-title">技能：</p>
+                            <div class="skill-tags" id="previewSkills">
+                                <span class="skill-tag">知识问答</span>
+                                <span class="skill-tag">专业咨询</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -425,7 +886,15 @@
         </div>
 
         <div class="chat-controls">
-            <!-- 移除会话控制按钮，只保留麦克风按钮 -->
+            <!-- 技能控制区域 -->
+            <div class="skills-section">
+                <p class="skills-title">角色技能：</p>
+                <div class="skills-container" id="skillsContainer">
+                    <!-- 技能按钮将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 语音控制区域 -->
             <div class="voice-controls">
                 <button id="voiceBtn" class="voice-btn" disabled>🎤</button>
             </div>
@@ -458,6 +927,8 @@
                 this.speechStartTime = 0; // 用户开始说话的时间
                 this.currentAudioPlayer = null; // 当前播放的音频元素
                 this.isAudioPlaying = false; // 音频播放状态
+                this.characters = new Map(); // 存储角色信息
+                this.currentCharacter = null; // 当前角色
                 // DOM元素
                 this.chatMessages = document.getElementById('chatMessages');
                 this.connectionStatus = document.getElementById('connectionStatus');
@@ -468,15 +939,285 @@
                 this.transcriptionText = document.getElementById('transcriptionText');
                 this.statusBar = document.getElementById('statusBar');
                 this.statusText = document.getElementById('statusText');
+                // 角色预览元素
+                this.characterPreview = document.getElementById('characterPreview');
+                this.previewAvatar = document.getElementById('previewAvatar');
+                this.previewName = document.getElementById('previewName');
+                this.previewCategory = document.getElementById('previewCategory');
+                this.previewSkills = document.getElementById('previewSkills');
+                this.skillsContainer = document.getElementById('skillsContainer');
+                this.characterSearch = document.getElementById('characterSearch');
+                this.searchBtn = document.getElementById('searchBtn');
                 this.initEventListeners();
                 this.updateStatus('准备就绪');
+                this.loadCharacters(); // 加载角色列表
                 this.initWebSocket(); // 页面加载即创建WebSocket
             }
 
             initEventListeners() {
                 this.voiceBtn.addEventListener('click', () => this.toggleRecording());
                 this.characterSelect.addEventListener('change', () => this.onCharacterChange());
+                this.characterSelect.addEventListener('mouseover', () => this.updateCharacterPreview());
+                this.characterSearch.addEventListener('input', () => this.searchCharacters());
+                this.searchBtn.addEventListener('click', () => this.searchCharacters());
                 window.addEventListener('beforeunload', () => this.closeWebSocket());
+            }
+
+            // 加载角色列表
+            async loadCharacters() {
+                try {
+                    this.updateStatus('正在加载角色列表...');
+                    const response = await fetch('/api/characters');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.characters.clear();
+                        // 存储角色信息
+                        Object.entries(data.characters).forEach(([id, character]) => {
+                            this.characters.set(id, character);
+                        });
+                        
+                        // 更新角色选择器
+                        this.updateCharacterSelector();
+                        this.updateStatus('角色列表加载完成');
+                    } else {
+                        this.showError('加载角色列表失败: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('加载角色列表失败:', error);
+                    this.showError('加载角色列表失败: ' + error.message);
+                }
+            }
+
+            // 更新角色选择器
+            updateCharacterSelector() {
+                // 清空现有选项
+                this.characterSelect.innerHTML = '';
+                
+                // 添加角色选项
+                this.characters.forEach((character, id) => {
+                    if (character.enabled) {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = character.name;
+                        option.title = character.background || character.personality;
+                        this.characterSelect.appendChild(option);
+                    }
+                });
+                
+                // 设置默认选择
+                if (this.characters.has('default')) {
+                    this.characterSelect.value = 'default';
+                    this.currentCharacter = this.characters.get('default');
+                }
+                
+                // 更新预览
+                this.updateCharacterPreview();
+            }
+
+            // 搜索角色
+            searchCharacters() {
+                const searchTerm = this.characterSearch.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    // 如果搜索为空，显示所有角色
+                    this.updateCharacterSelector();
+                    return;
+                }
+                
+                // 清空现有选项
+                this.characterSelect.innerHTML = '';
+                
+                // 筛选匹配的角色
+                const filteredCharacters = Array.from(this.characters.entries()).filter(([id, character]) => {
+                    if (!character.enabled) return false;
+                    
+                    // 搜索角色名称、分类、技能、背景等
+                    const searchableText = [
+                        character.name,
+                        character.category,
+                        character.background,
+                        character.expertise,
+                        ...(character.skills || []),
+                        ...(character.tags || [])
+                    ].join(' ').toLowerCase();
+                    
+                    return searchableText.includes(searchTerm);
+                });
+                
+                // 添加筛选后的角色选项
+                filteredCharacters.forEach(([id, character]) => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = character.name;
+                    option.title = character.background || character.personality;
+                    this.characterSelect.appendChild(option);
+                });
+                
+                // 如果有匹配的角色，选择第一个
+                if (filteredCharacters.length > 0) {
+                    this.characterSelect.value = filteredCharacters[0][0];
+                    this.currentCharacter = filteredCharacters[0][1];
+                } else {
+                    // 没有匹配的角色，显示提示
+                    const noResultsOption = document.createElement('option');
+                    noResultsOption.value = '';
+                    noResultsOption.textContent = '未找到匹配的角色';
+                    noResultsOption.disabled = true;
+                    this.characterSelect.appendChild(noResultsOption);
+                }
+                
+                // 更新预览
+                this.updateCharacterPreview();
+            }
+
+            // 更新角色预览
+            updateCharacterPreview() {
+                const selectedCharacterId = this.characterSelect.value;
+                const character = this.characters.get(selectedCharacterId);
+                
+                if (character) {
+                    this.previewAvatar.textContent = this.getCharacterAvatar(character);
+                    this.previewName.textContent = character.name;
+                    this.previewCategory.textContent = character.category || '通用角色';
+                    
+                    // 更新技能标签
+                    this.previewSkills.innerHTML = '';
+                    if (character.skills && character.skills.length > 0) {
+                        character.skills.forEach(skill => {
+                            const skillTag = document.createElement('span');
+                            skillTag.className = 'skill-tag';
+                            skillTag.textContent = skill;
+                            this.previewSkills.appendChild(skillTag);
+                        });
+                    } else {
+                        const noSkills = document.createElement('span');
+                        noSkills.className = 'skill-tag';
+                        noSkills.textContent = '通用技能';
+                        this.previewSkills.appendChild(noSkills);
+                    }
+                    
+                    // 更新技能按钮
+                    this.updateSkillButtons(character);
+                }
+            }
+
+            // 更新技能按钮
+            updateSkillButtons(character) {
+                console.log('更新技能按钮，角色:', character.name, '技能:', character.skills);
+                this.skillsContainer.innerHTML = '';
+                
+                if (character.skills && character.skills.length > 0) {
+                    character.skills.forEach(skill => {
+                        const skillButton = document.createElement('button');
+                        skillButton.className = 'skill-button';
+                        skillButton.innerHTML = `
+                            <span class="skill-icon">${this.getSkillIcon(skill)}</span>
+                            <span>${skill}</span>
+                        `;
+                        skillButton.title = this.getSkillDescription(skill);
+                        skillButton.onclick = () => this.useSkill(skill);
+                        skillButton.disabled = !this.isConnected;
+                        this.skillsContainer.appendChild(skillButton);
+                    });
+                } else {
+                    console.log('角色没有技能，显示通用对话');
+                    const defaultSkill = document.createElement('button');
+                    defaultSkill.className = 'skill-button';
+                    defaultSkill.innerHTML = `
+                        <span class="skill-icon">💬</span>
+                        <span>通用对话</span>
+                    `;
+                    defaultSkill.title = '进行通用对话';
+                    defaultSkill.onclick = () => this.useSkill('通用对话');
+                    defaultSkill.disabled = !this.isConnected;
+                    this.skillsContainer.appendChild(defaultSkill);
+                }
+            }
+
+            // 获取技能图标
+            getSkillIcon(skill) {
+                const skillIcons = {
+                    '知识问答': '❓',
+                    '情感支持': '💝',
+                    '语言学习': '📚',
+                    '专业咨询': '💼',
+                    '创意写作': '✍️',
+                    '历史讲解': '🏛️',
+                    '哲学思辨': '🤔',
+                    '文学赏析': '📖',
+                    '科学探索': '🔬',
+                    '艺术指导': '🎨',
+                    '通用对话': '💬'
+                };
+                return skillIcons[skill] || '💬';
+            }
+
+            // 获取技能描述
+            getSkillDescription(skill) {
+                const skillDescriptions = {
+                    '知识问答': '回答各种知识性问题',
+                    '情感支持': '提供情感支持和心理安慰',
+                    '语言学习': '帮助学习语言和语法',
+                    '专业咨询': '提供专业领域的建议',
+                    '创意写作': '协助创意写作和表达',
+                    '历史讲解': '生动讲解历史事件和人物',
+                    '哲学思辨': '引导哲学思考和讨论',
+                    '文学赏析': '分析文学作品和提升文学素养',
+                    '科学探索': '解释科学原理和现象',
+                    '艺术指导': '提供艺术创作指导',
+                    '通用对话': '进行日常对话交流'
+                };
+                return skillDescriptions[skill] || '进行对话交流';
+            }
+
+            // 使用技能
+            useSkill(skill) {
+                if (!this.isConnected || !this.sessionId) {
+                    this.showError('请先建立连接');
+                    return;
+                }
+                
+                this.updateStatus(`正在使用技能: ${skill}...`);
+                
+                // 发送技能使用消息
+                this.sendMessage({
+                    type: 'use_skill',
+                    sessionId: this.sessionId,
+                    skill: skill,
+                    timestamp: Date.now()
+                });
+                
+                // 在聊天中显示技能使用
+                this.addSkillUsageMessage(skill);
+            }
+
+            // 添加技能使用消息
+            addSkillUsageMessage(skill) {
+                const skillMessage = document.createElement('div');
+                skillMessage.className = 'skill-usage-message';
+                skillMessage.innerHTML = `
+                    <div class="skill-usage-content">
+                        <span class="skill-icon">${this.getSkillIcon(skill)}</span>
+                        <span class="skill-text">正在使用技能: ${skill}</span>
+                        <span class="skill-time">${this.getCurrentTime()}</span>
+                    </div>
+                `;
+                
+                this.chatMessages.appendChild(skillMessage);
+                this.scrollToBottom();
+                
+                // 3秒后淡出
+                setTimeout(() => {
+                    if (skillMessage.parentNode) {
+                        skillMessage.style.opacity = '0';
+                        setTimeout(() => {
+                            if (skillMessage.parentNode) {
+                                skillMessage.parentNode.removeChild(skillMessage);
+                            }
+                        }, 500);
+                    }
+                }, 3000);
             }
 
             initWebSocket() {
@@ -488,16 +1229,31 @@
                     this.isConnected = true;
                     this.updateConnectionStatus('connected', '已连接');
                     this.sessionId = this.generateSessionId();
+                    
+                    // 获取当前选择的角色
+                    const selectedCharacterId = this.characterSelect.value;
+                    const selectedCharacter = this.characters.get(selectedCharacterId);
+                    
                     // 发送开始会话消息
                     this.sendMessage({
                         type: 'start_session',
                         sessionId: this.sessionId,
-                        character: this.characterSelect.value
+                        character: selectedCharacterId
                     });
+                    
                     this.voiceBtn.disabled = false;
                     // 允许用户在会话期间切换角色
                     this.characterSelect.disabled = false;
-                    this.updateStatus('连接已建立，请点击麦克风按钮开始说话');
+                    
+                    // 显示当前角色信息
+                    if (selectedCharacter) {
+                        this.currentCharacter = selectedCharacter;
+                        this.updateStatus(`连接已建立，当前角色: ${selectedCharacter.name}`);
+                        this.showCharacterInfo(selectedCharacter);
+                        this.updateCharacterPreview(); // 更新角色预览和技能按钮
+                    } else {
+                        this.updateStatus('连接已建立，请点击麦克风按钮开始说话');
+                    }
                 };
                 this.websocket.onmessage = (event) => {
                     this.handleWebSocketMessage(JSON.parse(event.data));
@@ -522,19 +1278,133 @@
             }
 
             onCharacterChange() {
-                if (this.isConnected && this.sessionId) {
-                    const selectedCharacter = this.characterSelect.options[this.characterSelect.selectedIndex].text;
-                    this.updateStatus(`正在切换到角色: ${selectedCharacter}...`);
+                const selectedCharacterId = this.characterSelect.value;
+                const selectedCharacter = this.characters.get(selectedCharacterId);
+                
+                console.log('角色切换:', selectedCharacterId, selectedCharacter);
+                
+                if (selectedCharacter) {
+                    // 如果正在录音，先停止录音
+                    if (this.isRecording) {
+                        this.stopRecording();
+                    }
                     
-                    // 发送角色切换消息
-                    this.sendMessage({
-                        type: 'change_character',
-                        sessionId: this.sessionId,
-                        character: this.characterSelect.value
-                    });
+                    // 如果正在播放音频，先停止播放
+                    if (this.isAudioPlaying) {
+                        this.stopCurrentAudio();
+                    }
+                    
+                    // 显示角色切换动画
+                    this.showCharacterSwitchAnimation(selectedCharacter);
+                    
+                    this.currentCharacter = selectedCharacter;
+                    
+                    if (this.isConnected && this.sessionId) {
+                        this.updateStatus(`正在切换到角色: ${selectedCharacter.name}...`);
+                        
+                        // 发送角色切换消息
+                        this.sendMessage({
+                            type: 'change_character',
+                            sessionId: this.sessionId,
+                            character: selectedCharacterId
+                        });
+                        
+                        // 延迟显示角色信息，让动画先播放
+                        setTimeout(() => {
+                            this.showCharacterInfo(selectedCharacter);
+                            this.updateCharacterPreview(); // 更新角色预览和技能按钮
+                        }, 1000);
+                    } else {
+                        // 如果未连接，显示角色信息但不切换
+                        this.updateStatus(`已选择角色: ${selectedCharacter.name}`);
+                        setTimeout(() => {
+                            this.showCharacterInfo(selectedCharacter);
+                            this.updateCharacterPreview(); // 更新角色预览和技能按钮
+                        }, 1000);
+                    }
                 } else {
-                    // 如果未连接，恢复原来的选择
                     this.updateStatus('请先建立连接后再切换角色');
+                }
+            }
+
+            // 显示角色切换动画
+            showCharacterSwitchAnimation(newCharacter) {
+                const switchAnimation = document.createElement('div');
+                switchAnimation.className = 'character-switch-animation';
+                switchAnimation.innerHTML = `
+                    <div class="switch-content">
+                        <div class="switch-icon">🔄</div>
+                        <div class="switch-text">正在切换角色...</div>
+                        <div class="switch-character-name">${newCharacter.name}</div>
+                    </div>
+                `;
+                
+                // 添加到页面
+                document.body.appendChild(switchAnimation);
+                
+                // 2秒后移除动画
+                setTimeout(() => {
+                    if (switchAnimation.parentNode) {
+                        switchAnimation.style.opacity = '0';
+                        setTimeout(() => {
+                            if (switchAnimation.parentNode) {
+                                switchAnimation.parentNode.removeChild(switchAnimation);
+                            }
+                        }, 500);
+                    }
+                }, 2000);
+            }
+
+            // 显示角色信息
+            showCharacterInfo(character) {
+                // 创建角色信息提示
+                const characterInfo = document.createElement('div');
+                characterInfo.className = 'character-info-message';
+                characterInfo.innerHTML = `
+                    <div class="character-info">
+                        <div class="character-avatar">${this.getCharacterAvatar(character)}</div>
+                        <div class="character-details">
+                            <h4>${character.name}</h4>
+                            <p class="character-category">${character.category || '通用角色'}</p>
+                            <p class="character-background">${character.background || character.personality}</p>
+                            ${character.skills && character.skills.length > 0 ? 
+                                `<div class="character-skills">
+                                    <strong>技能:</strong> ${character.skills.join(', ')}
+                                </div>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                // 添加到聊天消息中
+                this.chatMessages.appendChild(characterInfo);
+                this.scrollToBottom();
+                
+                // 3秒后淡出
+                setTimeout(() => {
+                    if (characterInfo.parentNode) {
+                        characterInfo.style.opacity = '0';
+                        setTimeout(() => {
+                            if (characterInfo.parentNode) {
+                                characterInfo.parentNode.removeChild(characterInfo);
+                            }
+                        }, 500);
+                    }
+                }, 3000);
+            }
+
+            // 获取角色头像
+            getCharacterAvatar(character) {
+                // 根据角色类型返回不同的头像
+                if (character.category === '历史人物') {
+                    return '👴';
+                } else if (character.category === '文学角色') {
+                    return '📚';
+                } else if (character.category === '虚拟角色') {
+                    return character.gender === '女' ? '👧' : '👦';
+                } else if (character.category === '专业顾问') {
+                    return '👔';
+                } else {
+                    return '🤖';
                 }
             }
 
@@ -574,6 +1444,9 @@
                         break;
                     case 'audio_synthesis':
                         this.handleAudioSynthesis(message);
+                        break;
+                    case 'skill_response':
+                        this.handleSkillResponse(message);
                         break;
                     case 'pong':
                         // 处理心跳响应
@@ -631,6 +1504,18 @@
                     // 播放完成后提示用户继续说话
                     this.playAudioAndWaitForUser(message.data);
                     // 播放完成后恢复录音按钮
+                    this.voiceBtn.disabled = false;
+                    this.isWaitingForUser = true;
+                }
+            }
+
+            // 处理技能响应
+            handleSkillResponse(message) {
+                if (message.skill && message.data) {
+                    this.updateStatus(`技能 ${message.skill} 响应完成`);
+                    // 显示技能响应消息
+                    this.addMessage('assistant', `[${message.skill}] ${message.data}`);
+                    // 恢复录音按钮
                     this.voiceBtn.disabled = false;
                     this.isWaitingForUser = true;
                 }

@@ -1,6 +1,7 @@
 package com.example.airoleplaying.controller;
 
 import com.example.airoleplaying.model.CharacterProfile;
+import com.example.airoleplaying.model.CharacterSkill;
 import com.example.airoleplaying.service.CharacterService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -9,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 角色管理控制器
@@ -188,6 +191,240 @@ public class CharacterController {
 
         } catch (Exception e) {
             logger.error("获取语音列表失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 搜索角色
+     */
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchCharacters(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String skill,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<CharacterProfile> characters = characterService.searchCharacters(keyword, category, skill);
+            
+            // 分页处理
+            int start = page * size;
+            int end = Math.min(start + size, characters.size());
+            List<CharacterProfile> pagedCharacters = characters.subList(start, end);
+
+            response.put("success", true);
+            response.put("characters", pagedCharacters);
+            response.put("total", characters.size());
+            response.put("page", page);
+            response.put("size", size);
+            response.put("hasMore", end < characters.size());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("搜索角色失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 获取角色分类列表
+     */
+    @GetMapping("/categories")
+    public ResponseEntity<Map<String, Object>> getCategories() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Set<String> categories = characterService.getAllCategories();
+
+            response.put("success", true);
+            response.put("categories", categories);
+            response.put("count", categories.size());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("获取角色分类失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 获取可用技能列表
+     */
+    @GetMapping("/skills")
+    public ResponseEntity<Map<String, Object>> getSkills() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Set<String> skills = characterService.getAllSkills();
+            Map<String, String> skillDetails = new HashMap<>();
+            
+            // 添加技能详细描述
+            for (CharacterSkill skill : CharacterSkill.values()) {
+                skillDetails.put(skill.getName(), skill.getDescription());
+            }
+
+            response.put("success", true);
+            response.put("skills", skills);
+            response.put("skillDetails", skillDetails);
+            response.put("count", skills.size());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("获取技能列表失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 根据分类获取角色
+     */
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Map<String, Object>> getCharactersByCategory(@PathVariable String category) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<CharacterProfile> characters = characterService.getCharactersByCategory(category);
+
+            response.put("success", true);
+            response.put("category", category);
+            response.put("characters", characters);
+            response.put("count", characters.size());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("根据分类获取角色失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 根据技能获取角色
+     */
+    @GetMapping("/skill/{skill}")
+    public ResponseEntity<Map<String, Object>> getCharactersBySkill(@PathVariable String skill) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<CharacterProfile> characters = characterService.getCharactersBySkill(skill);
+
+            response.put("success", true);
+            response.put("skill", skill);
+            response.put("characters", characters);
+            response.put("count", characters.size());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("根据技能获取角色失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 获取热门角色
+     */
+    @GetMapping("/popular")
+    public ResponseEntity<Map<String, Object>> getPopularCharacters(
+            @RequestParam(defaultValue = "10") int limit) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<CharacterProfile> characters = characterService.getPopularCharacters(limit);
+
+            response.put("success", true);
+            response.put("characters", characters);
+            response.put("count", characters.size());
+            response.put("limit", limit);
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("获取热门角色失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 获取角色统计信息
+     */
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Object>> getCharacterStatistics() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Map<String, Object> statistics = characterService.getCharacterStatistics();
+
+            response.put("success", true);
+            response.put("statistics", statistics);
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("获取角色统计失败: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 更新角色热度
+     */
+    @PostMapping("/{characterId}/popularity")
+    public ResponseEntity<Map<String, Object>> updateCharacterPopularity(
+            @PathVariable String characterId,
+            @RequestParam int popularity) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            if (!characterService.hasCharacter(characterId)) {
+                response.put("success", false);
+                response.put("error", "角色不存在: " + characterId);
+                return ResponseEntity.status(404).body(response);
+            }
+
+            characterService.updateCharacterPopularity(characterId, popularity);
+
+            response.put("success", true);
+            response.put("character_id", characterId);
+            response.put("popularity", popularity);
+            response.put("message", "角色热度更新成功");
+            response.put("timestamp", System.currentTimeMillis());
+
+            logger.info("角色热度更新成功: {} -> {}", characterId, popularity);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("更新角色热度失败: {}", e.getMessage(), e);
             response.put("success", false);
             response.put("error", e.getMessage());
             return ResponseEntity.status(500).body(response);

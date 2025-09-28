@@ -87,6 +87,9 @@ public class VoiceWebSocketHandler implements WebSocketHandler {
                 case "stop_tts":
                     handleStopTts(session, wsMessage);
                     break;
+                case "use_skill":
+                    handleUseSkill(session, wsMessage);
+                    break;
                 default:
                     log.warn("未知的消息类型: {}", wsMessage.getType());
             }
@@ -366,6 +369,34 @@ public class VoiceWebSocketHandler implements WebSocketHandler {
         } catch (Exception e) {
             log.error("停止TTS失败: {}", e.getMessage(), e);
             sendError(session, "停止TTS失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 处理技能使用请求
+     */
+    private void handleUseSkill(WebSocketSession session, WebSocketMessageEntity message) throws IOException {
+        try {
+            String sessionId = (String) session.getAttributes().get("sessionId");
+            if (sessionId == null) {
+                sendError(session, "会话未开始，请先发送start_session消息");
+                return;
+            }
+            
+            String skill = message.getSkill();
+            if (skill == null || skill.trim().isEmpty()) {
+                sendError(session, "技能名称不能为空");
+                return;
+            }
+            
+            // 处理技能使用
+            streamingVoiceService.useSkill(sessionId, skill);
+            
+            log.info("技能使用成功: sessionId={}, skill={}", sessionId, skill);
+            
+        } catch (Exception e) {
+            log.error("技能使用失败: {}", e.getMessage(), e);
+            sendError(session, "技能使用失败: " + e.getMessage());
         }
     }
 

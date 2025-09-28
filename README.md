@@ -9,6 +9,7 @@
 ## 🚀 核心特性
 
 - **🎭 多角色扮演**: 支持自定义AI角色，不同性格和语音风格
+- **🎯 角色技能系统**: 每个角色具备独特的技能，支持技能调用和切换
 - **🎤 实时语音交互**: 基于WebSocket的低延迟语音通信
 - **🧠 智能对话**: 集成阿里云通义千问，提供高质量的AI对话
 - **📝 语音识别**: 阿里云智能语音识别，支持实时转录
@@ -140,6 +141,7 @@ java -jar target/ai-role-playing-1.0.0.jar
 #### 3. 模型层 (Model)
 ```
 ├── CharacterProfile.java         # 角色配置模型
+├── CharacterSkill.java           # 角色技能枚举
 └── WebSocketMessageEntity.java   # WebSocket消息实体
 ```
 
@@ -176,20 +178,45 @@ character:
       name: "智能助手"
       personality: "友善、专业的AI助手"
       voice: "siqi"
+      skills: ["知识问答", "专业咨询"]
     anime-girl:                # 二次元角色
       name: "萌妹子小爱"
       personality: "可爱活泼的二次元少女"
       voice: "aixia"
+      skills: ["情感支持", "创意写作"]
     professional:              # 专业角色
       name: "专业顾问"
       personality: "严谨专业的商务顾问"
       voice: "zhiyu"
+      skills: ["专业咨询", "知识问答"]
 ```
+
+#### 角色技能系统
+每个角色都具备独特的技能，技能系统包含以下特性：
+
+##### 技能类型
+- **知识问答**: 回答各种知识性问题
+- **情感支持**: 提供情感支持和心理安慰
+- **语言学习**: 帮助学习语言和语法
+- **专业咨询**: 提供专业领域的建议
+- **创意写作**: 协助创意写作和表达
+- **历史讲解**: 生动讲解历史事件和人物
+- **哲学思辨**: 引导哲学思考和讨论
+- **文学赏析**: 分析文学作品和提升文学素养
+- **科学探索**: 解释科学原理和现象
+- **艺术指导**: 提供艺术创作指导
+
+##### 技能调用机制
+1. **技能验证**: 检查角色是否具备请求的技能
+2. **提示词生成**: 根据技能类型生成相应的引导提示
+3. **角色代入**: AI以角色身份使用特定技能回应
+4. **状态管理**: 维护技能使用状态和上下文
 
 #### 角色扩展机制
 - **动态加载**: 支持运行时添加新角色
-- **个性化**: 每个角色独立的性格和语音
+- **个性化**: 每个角色独立的性格、语音和技能
 - **上下文保持**: 角色在对话中保持一致性
+- **技能组合**: 支持角色具备多种技能组合
 
 ## 📡 API接口文档
 
@@ -219,6 +246,23 @@ Content-Type: application/json
 }
 ```
 
+#### 3. 角色技能管理
+```http
+GET /api/characters/skills
+# 获取所有可用技能列表
+
+GET /api/characters/skill/{skill}
+# 获取具备指定技能的角色列表
+
+POST /api/characters/{characterId}/skills
+# 为角色添加技能
+Content-Type: application/json
+
+{
+  "skills": ["知识问答", "情感支持"]
+}
+```
+
 ### WebSocket API
 
 #### 连接端点
@@ -242,6 +286,9 @@ ws://localhost:8080/ws/voice-stream
 - **text**: 文本消息
 - **command**: 控制命令（开始/结束录音等）
 - **status**: 状态消息
+- **use_skill**: 技能使用消息
+- **skill_response**: 技能响应消息
+- **change_character**: 角色切换消息
 
 ## 🎮 使用示例
 
@@ -275,6 +322,35 @@ ws.send(JSON.stringify({
   type: 'text',
   data: '你好，请介绍一下自己',
   characterId: 'default'
+}));
+```
+
+### 4. 技能调用
+```javascript
+// 使用角色技能
+ws.send(JSON.stringify({
+  type: 'use_skill',
+  skill: '知识问答',
+  sessionId: 'session-uuid'
+}));
+
+// 接收技能响应
+ws.onmessage = function(event) {
+  const message = JSON.parse(event.data);
+  if (message.type === 'skill_response') {
+    console.log(`[${message.skill}] ${message.data}`);
+    // 输出: [知识问答] 作为智能助手，我很乐意回答您的知识性问题...
+  }
+};
+```
+
+### 5. 角色切换
+```javascript
+// 切换到专业顾问角色
+ws.send(JSON.stringify({
+  type: 'change_character',
+  character: 'professional',
+  sessionId: 'session-uuid'
 }));
 ```
 
@@ -376,10 +452,15 @@ grep "ERROR" logs/ai-role-playing.log
 ## 🔮 未来规划
 
 ### 功能扩展
+- [x] 角色技能系统 - 支持角色技能调用和切换
+- [x] 技能提示词生成 - 根据技能类型生成引导提示
+- [x] 角色搜索和筛选 - 支持按技能搜索角色
 - [ ] 支持更多语音音色
 - [ ] 添加情感识别功能
 - [ ] 实现多轮对话记忆
 - [ ] 支持自定义角色训练
+- [ ] 技能组合和协同 - 支持多技能协同工作
+- [ ] 技能学习机制 - 根据用户反馈优化技能表现
 
 ### 技术升级
 - [ ] 微服务架构改造
